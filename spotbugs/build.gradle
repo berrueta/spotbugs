@@ -39,7 +39,7 @@ sourceSets {
   }
   gui {
     java {
-      srcDirs = ['src/gui/main']
+      srcDirs = ['src/gui/main', 'src/gui/test/java']
     }
     resources {
       srcDirs = ['src/gui/main']
@@ -79,6 +79,7 @@ dependencies {
   guiCompile 'org.dom4j:dom4j:2.1.0'
   guiCompileOnly 'com.apple:AppleJavaExtensions:1.4'
   guiCompileOnly project(':spotbugs-annotations')
+  guiCompileOnly 'junit:junit:4.12'
 }
 
 // spotbugs {
@@ -96,6 +97,11 @@ tasks.withType(Jar).all {
   //destinationDir = file("$projectDir/lib")
 }
 
+eclipse.classpath {
+  plusConfigurations += [ configurations.compileOnly ]
+  plusConfigurations += [ configurations.guiCompileOnly ]
+  plusConfigurations += [ configurations.testCompile ]
+}
 
 eclipse.classpath.file {
     whenMerged {
@@ -127,6 +133,10 @@ task copyLibsForEclipse (type: Copy) {
     include "*.jar"
 
     from configurations.compileOnly.files
+    into ".libs"
+    include "*.jar"
+
+    from configurations.guiCompileOnly.files
     into ".libs"
     include "*.jar"
 }
